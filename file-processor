@@ -1,0 +1,49 @@
+import string
+import os
+
+punclist = set(string.punctuation)
+files = os.listdir('simple_complex')
+numfiles = len(files)
+print(numfiles)
+fileroot = "simple_complex/"
+file_number = 0
+wordlist = []
+appear = []
+for file_Number in range(0, numfiles):
+        filename = fileroot + files.pop(0)
+        print(filename)
+        wordlist = [];
+        appear = [];
+        file = open(filename, 'r')
+        text = file.read()
+        words = text.split()
+        for word in words:
+            word = ''.join(ch for ch in word if ch not in punclist)
+            print(word)
+            if word not in wordlist:
+                wordlist.append(word)
+                appear.append(1)
+            if word in wordlist:
+                place = wordlist.index(word)
+                before = appear[place]
+                after = before + 1
+                appear.insert(place, after)
+        print("Number of words in file: ", len(words))
+        print("Number of unique words: ", len(wordlist))
+        print("Lexical Diversity: ", len(words)/len(wordlist))
+        listlen = len(wordlist)
+        sum = 0
+        i = 0
+        for i in range(0, listlen):
+                sum = sum + appear[i]
+        density = sum/listlen
+        print("Number of times words are used ", density)
+        i = 0
+        #for i in range(0, listlen):
+         #   print("(", wordlist[i], ", ", appear[i], ")")
+          #  i = i + 1
+        file_number +=1
+        print("")
+
+
+print (files)
