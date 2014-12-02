@@ -9,6 +9,37 @@ fileroot = "simple_complex/"
 file_number = 0
 wordlist = []
 appear = []
+
+##Sets up the adjective list and adjective counter
+adj_file = open('French/Fadjectives.txt', 'r')
+adj_text = adj_file.read()
+adj_list = adj_text.split()
+adj_appear = []
+adj_list_len = len(adj_list)
+adj_list_place = 0
+for adj_list_place in range(0, adj_list_len):
+        adj_appear.append(0)
+
+##Sets up the cognates list and cognates counter
+cog_file = open('French/cognates.txt', 'r')
+cog_text = cog_file.read()
+cog_list = cog_text.split()
+cog_appear = []
+cog_list_len = len(cog_list)
+cog_list_place = 0
+for cog_list_Place in range(0, cog_list_len):
+        cog_appear.append(0)
+
+##Sets up the false cognates list and false cognates counter
+fcog_file = open('French/fcognates.txt', 'r')
+fcog_text = fcog_file.read()
+fcog_list = fcog_text.split()
+fcog_appear = []
+fcog_list_len = len(fcog_list)
+fcog_list_place = 0
+for fcog_list_Place in range(0, fcog_list_len):
+        fcog_appear.append(0)
+
 for file_Number in range(0, numfiles):
         filename = fileroot + files.pop(0)
         print(filename)
@@ -19,7 +50,21 @@ for file_Number in range(0, numfiles):
         words = text.split()
         for word in words:
             word = ''.join(ch for ch in word if ch not in punclist)
-            print(word)
+            if word in fcog_list:
+                place = fcog_list.index(word)
+                before = fcog_appear[place]
+                after = before +1
+                fcog_appear.insert(place, after)
+            if word in cog_list:
+                place = cog_list.index(word)
+                before = cog_appear[place]
+                after = before +1
+                cog_appear.insert(place, after)
+            if word in adj_list:
+                place = adj_list.index(word)
+                before = adj_appear[place]
+                after = before +1
+                adj_appear.insert(place, after)
             if word not in wordlist:
                 wordlist.append(word)
                 appear.append(1)
@@ -28,9 +73,40 @@ for file_Number in range(0, numfiles):
                 before = appear[place]
                 after = before + 1
                 appear.insert(place, after)
+
+        ##This calculates total_num_adjectives and unique_adjectives
+        index_place = 0
+        unique_adjectives = 0
+        total_num_adjectives = 0
+        for index_place in range(0, adj_list_len):
+                total_num_adjectives = total_num_adjectives + adj_appear[index_place]
+                if adj_appear[index_place] > 0:
+                        unique_adjectives = unique_adjectives +1
+
+        #This calculates the total number of cognates and unique cognates
+        index_place = 0
+        total_num_cog = 0
+        unique_cog = 0
+        for index_place in range(0, cog_list_len):
+                total_num_cog = total_num_cog + cog_appear[index_place]
+                if cog_appear[index_place] > 0:
+                        unique_cog = unique_cog +1
+
+        #This calculates the total number of false cognates and false cognates
+        index_place = 0
+        total_num_fcog = 0
+        unique_fcog = 0
+        for index_place in range(0, fcog_list_len):
+                total_num_fcog = total_num_fcog + fcog_appear[index_place]
+                if fcog_appear[index_place] > 0:
+                        unique_fcog = unique_fcog +1
+
+        ##The results
         print("Number of words in file: ", len(words))
         print("Number of unique words: ", len(wordlist))
         print("Lexical Diversity: ", len(words)/len(wordlist))
+        print("Total number of Adjectives: ", total_num_adjectives)
+        print("Total unique Adjectives", unique_adjectives)
         listlen = len(wordlist)
         sum = 0
         i = 0
@@ -38,12 +114,27 @@ for file_Number in range(0, numfiles):
                 sum = sum + appear[i]
         density = sum/listlen
         print("Number of times words are used ", density)
+        print("Total number of cognates", total_num_cog)
+        print("Unique cognates", unique_cog)
+        print("Total number of false cognates", total_num_fcog)
+        print("Unique false cognates", unique_fcog)
         i = 0
-        #for i in range(0, listlen):
-         #   print("(", wordlist[i], ", ", appear[i], ")")
-          #  i = i + 1
+
+        ##Resets the adjective counter for the next pass
+        adj_list_place = 0
+        for adj_list_place in range(0, adj_list_len):
+                adj_appear[adj_list_place] = 0
+
+        ##Resets the cognates counter for the next pass
+        cog_list_place = 0
+        for cog_list_place in range(0, cog_list_len):
+                cog_appear[cog_list_place] = 0
+
+        ##Resets the cognates counter for the next pass
+        fcog_list_place = 0
+        for fcog_list_place in range(0, fcog_list_len):
+                fcog_appear[fcog_list_place] = 0
+        
+                
         file_number +=1
         print("")
-
-
-print (files)
